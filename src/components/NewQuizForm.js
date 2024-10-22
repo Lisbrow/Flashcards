@@ -6,13 +6,14 @@ import ROUTES from "../app/routes";
 // import selectors
 import { selectTopics } from "../features/topics/topicsSlice";
 import { addQuiz } from "../features/quizzes/quizzesSlice";
+import { addCard } from "../features/cards/cardsSlice";
 
 export default function NewQuizForm() {
   const [name, setName] = useState("");
   const [cards, setCards] = useState([]);
   const [topicId, setTopicId] = useState("");
   const navigate = useNavigate();
-  const topics = useSelector(selectTopics);  // Replace with topics 
+  const topics = useSelector(selectTopics); // Replace with topics
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
@@ -21,17 +22,22 @@ export default function NewQuizForm() {
       return;
     }
 
+    // create the new cards here and add each card's id to cardIds
     const cardIds = [];
 
-    // create the new cards here and add each card's id to cardIds
-    // create the new quiz here
+    cards.forEach((card) => {
+      let cardId = uuidv4();
+      cardIds.push(cardId);
+      dispatch(addCard({ ...card, id: cardId }));
+    });
 
+    // create the new quiz here
     const quizId = uuidv4();
 
-    // dispatch add quiz action 
-    dispatch(addQuiz({ id: uuidv4(), name, topicId, cardIds: [] }));
+    // dispatch add quiz action
+    dispatch(addQuiz({ id: quizId, name, topicId, cardIds }));
 
-    navigate(ROUTES.quizzesRoute())
+    navigate(ROUTES.quizzesRoute());
   };
 
   const addCardInputs = (e) => {
@@ -67,13 +73,19 @@ export default function NewQuizForm() {
         >
           <option value="">Topic</option>
           {Object.values(topics).map((topic) => (
-            <option key={topic.id} value={topic.id}>
+            <option
+              key={topic.id}
+              value={topic.id}
+            >
               {topic.name}
             </option>
           ))}
         </select>
         {cards.map((card, index) => (
-          <div key={index} className="card-front-back">
+          <div
+            key={index}
+            className="card-front-back"
+          >
             <input
               id={`card-front-${index}`}
               value={cards[index].front}

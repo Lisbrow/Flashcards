@@ -1,23 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    quizzes: {}
+  quizzes: {},
 };
 
 const quizzesSlice = createSlice({
-    name: 'quizzes',
-    initialState: initialState,
-    reducers: {
-        addQuiz: (state, action) => {
-            const { id, name, topicId } = action.payload;
-            state.quizzes[id] = {
-                id,
-                name,
-                topicId,
-                cardIds: []
-            };
-        },
+  name: "quizzes",
+  initialState: initialState,
+  reducers: {
+    addQuiz: (state, action) => {
+      const { id } = action.payload;
+      state.quizzes[id] = action.payload;
     },
+  },
 });
 
 export const { addQuiz } = quizzesSlice.actions;
